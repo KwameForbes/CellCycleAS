@@ -264,5 +264,5 @@ ASevents = as.data.frame(ASevents)
 ASeventPSI <- subset(ASevents,select = c(4,53,2,3,37:39,46:47,40:42,48:50,43:45))
 rownames(ASeventPSI) <- NULL
 ASeventPSI = as.data.frame(ASeventPSI)
-write.csv(ASeventPSI,"ASeventPSI.csv")
+#write.csv(ASeventPSI,"ASeventPSI.csv")
 
