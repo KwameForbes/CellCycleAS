@@ -1,12 +1,10 @@
 pheatmaptester = read.csv("/nas/longleaf/home/kwamek/CellCycleAS/AS-nonorm-50counts-10perdiffPSI.csv",header = T,sep = ",")
+
 pheatmaptester  = subset(pheatmaptester,select = c(-1))
 
 
-ASeventPSI = subset(ASeventPSI,select = c(-1))
-
-
-TAGS = as.data.frame(ASeventPSI[1:4])
-VALS = as.data.frame(ASeventPSI[5:18])
+TAGS = as.data.frame(pheatmaptester[1:3])
+VALS = as.data.frame(pheatmaptester[4:17])
 
 
 
@@ -17,12 +15,14 @@ normie <- function(x, ...) {
 VALS = as.data.frame(t(VALS))
 VALS = apply(VALS,2,normie)
 VALS = as.data.frame(t(VALS))
-ASeventPSI = cbind(TAGS,VALS)
+ASeventPSInorm = cbind(TAGS,VALS)
 
-ASeventPSI2 = as.data.frame(ASeventPSI)
-ASeventPSI2[5:18] = apply(ASeventPSI2[5:18], 1, normie)
-#write.csv(ASeventPSI,"AS-norm-50counts-10perdiffPSI.csv")
+# ASeventPSI2 = as.data.frame(ASeventPSI)
+# ASeventPSI2[5:18] = apply(ASeventPSI2[5:18], 1, normie)
+write.csv(ASeventPSInorm,"AS-norm-50counts-10perdiffPSI.csv")
 
+BiggerSeed = read.csv("/nas/longleaf/home/kwamek/BiggerSeed.csv",header = T,sep = ",")
+BiggerSeed = subset(BiggerSeed,select = c(-1))
 pheatmaptester = merge(pheatmaptester,BiggerSeed,by ="EVENT")
 
 pheatmaptester <- pheatmaptester[order(pheatmaptester$seed,pheatmaptester$SCORE),]
