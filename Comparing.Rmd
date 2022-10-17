@@ -4,7 +4,7 @@ author: "Kwame Forbes"
 date: "9/19/2022"
 output: html_document
 ---
-Comparing Pengda vs ELife
+Comparing Pengda WTvMUT vs ELife
 
 Dependencies
 ```{r}
@@ -223,11 +223,11 @@ pengda_WTvT200M <- rbind(WTvT200M_ri_jc,WTvT200M_se_jc,WTvT200M_a3ss_jc,WTvT200M
 
 
 
-Elife 50+ counts and 10 percent difference in PSI
+Elife 50+ counts
 ```{r}
-#Load Dataset of nonnormalized PSI with 50+counts and 10 percent difference in PSI----
+#Load Dataset of nonnormalized PSI with 50+counts ----
 
-elife = read.csv("/nas/longleaf/home/kwamek/CellCycleAS/AS-nonorm-50counts-10perdiffPSI.csv",header = T,sep = ",")
+elife = read.csv("/nas/longleaf/home/kwamek/CellCycleAS/AS-nonorm-50counts.csv",header = T,sep = ",")
 elife = subset(elife,select = c(-1))
 
 #Renaming Columns----
@@ -244,6 +244,7 @@ overlap_D = merge(pengda_WTvT200M,elife,by="EVENT")
 Filtering  Pengda WT vs T200M by FDR and Inc LevelDifference
 ```{r}
 pengda_WTvT200M_filtered <- subset(pengda_WTvT200M,FDR <= FDR.variable & abs(IncLevelDifference)>= IncLevelDifference.variable)
+write.csv(pengda_WTvT200M_filtered,"WTvsMUT-AS-SigEVENTS.csv")
 ```
 
 
@@ -371,7 +372,23 @@ pheatmap(elife_seed[4:17], show_rownames=F,cluster_cols= F,cluster_rows = F,scal
          annotation_row = anno,annotation_col = cat_df, cellwidth = 10,color=colorRampPalette(c("red", "white", "blue"))(150),
          border_color = NA)
 ```
+Events that overlap so I can do GO Analysis
+```{r}
+overlapping_genes <- subset(overlap_C,select = c(1))
+colnames(overlapping_genes) <- c("GENES")
+overlapping_genes <- data.frame(do.call('rbind', strsplit(as.character(overlapping_genes$GENES),'_',fixed=TRUE)))
+overlapping_genes <- subset(overlapping_genes,select = c(1))
+overlapping_genes <- cbind(overlapping_genes,overlap_C$SCORE)
+colnames(overlapping_genes) <- c("GENES","SCORE")
+#overlapping_genes <- subset(overlapping_genes,select = c(3,2))
 
+#write.csv(overlapping_genes,"Sig-overlapping-genes-pen-elife.txt")
+
+
+ 
+
+
+```
 
 
 

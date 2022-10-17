@@ -349,10 +349,6 @@ Cellcycle_MXE_JC50$PSIDiff <- (apply(Cellcycle_MXE_JC50[38:51], MARGIN =  1, f,)
 
 
 
-# Cellcycle_MXEsigs_JC = subset(Cellcycle_MXE_JC, IncLevel_TimePoint_1 & IncLevel_TimePoint_2 & IncLevel_TimePoint_3 & IncLevel_TimePoint_4 & IncLevel_TimePoint_5 & IncLevel_TimePoint_6 & IncLevel_TimePoint_7 & IncLevel_TimePoint_8 &
-#                                IncLevel_TimePoint_9 & IncLevel_TimePoint_10 & IncLevel_TimePoint_11 & IncLevel_TimePoint_12 & IncLevel_TimePoint_13 & IncLevel_TimePoint_14 > IncLevelvar)
-
-
 ASevents50 <- rbind(Cellcycle_RI_JC50,Cellcycle_SE_JC50,Cellcycle_A3SS_JC50,Cellcycle_A5SS_JC50,Cellcycle_MXE_JC50)
 ASevents50 <- na.omit(ASevents50)
 ASevents50Diff = subset(ASevents50,PSIDiff>=0.1)
@@ -360,7 +356,7 @@ ASevents50Diff = subset(ASevents50,PSIDiff>=0.1)
 ASevents50Diff = unite(ASevents50Diff,"EVENT",c(3,4),sep = "_", remove = F)
 ASevents50Diffclean = subset(ASevents50Diff,select = c(55,3,2,39:41,48:49,42:44,50:52,45:47))
 rownames(ASevents50Diffclean) <- NULL
-write.csv(ASevents50Diffclean,"AS-nonorm-50counts-10perdiffPSI.csv")
+#write.csv(ASevents50Diffclean,"AS-nonorm-50counts-10perdiffPSI.csv")
 
 
 
