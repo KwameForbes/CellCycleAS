@@ -10,6 +10,14 @@ Dependencies
 ```{r}
 library(tidyr)
 library(pheatmap)
+install.packages("BioVenn")
+library(BioVenn)
+library(ggplot2)
+library(ggpubr)
+library(org.Hs.eg.db)
+library("AnnotationHub")
+library(GO.db)
+library(dplyr)
 ```
 
 ```{r}
@@ -372,18 +380,80 @@ pheatmap(elife_seed[4:17], show_rownames=F,cluster_cols= F,cluster_rows = F,scal
          annotation_row = anno,annotation_col = cat_df, cellwidth = 10,color=colorRampPalette(c("red", "white", "blue"))(150),
          border_color = NA)
 ```
+Venn Diagram and Other Viz
+```{r}
+install.packages("BioVenn")
+library(BioVenn)
+Pengda <- as.character(overlap_A$EVENT)
+Elife <- as.character(overlap_B$EVENT)
+Empty <- NULL
+
+A_B <- as.data.frame(cbind(overlap_A$events.x,overlap_B$Event.x))
+A_B <- data.frame(x=unlist(A_B))
+
+q <- draw.venn(Pengda,Elife,Empty,title = "AS EVENTS",subtitle = " ",xtitle = "PENGDA",
+          ytitle = "ELIFE",y_c = "blue",output = "pdf",filename = "Venn Diagram",
+          yt_s = 2,xt_s = 2,nr_s = 2)
+
+
+C <- ggplot(overlap_C, aes(x=events.x))+
+  geom_bar(stat="count", width=0.7, fill="steelblue")+
+  theme_minimal()
+
+ggplot(overlap_A, aes(x=events.x))+
+  geom_bar(stat="count", width=0.7, fill="red")+
+  theme_minimal()
+
+ggplot(overlap_B, aes(x=Event.x))+
+  geom_bar(stat="count", width=0.7, fill="green")+
+  theme_minimal()
+
+A <- ggplot(overlap_D, aes(x=events))+
+  geom_bar(stat="count", width=0.7, fill="green")+
+  theme_minimal()
+
+B <- ggplot(A_B, aes(x=x))+
+  geom_bar(stat="count", width=0.7, fill="green")+
+  theme_minimal()
+
+
+gg <- ggarrange(A, B,C, 
+          labels = c("A", "B","C"),
+          ncol = 3, nrow = 1)
+
+
+pp <- data.frame(Events = c("A3SS","A5SS","MXE","RI","SE"),
+                    percent =c(sum(overlap_C$events.x=="A3SS")/sum(A_B$x=="A3SS")*100,
+                               sum(overlap_C$events.x=="A5SS")/sum(A_B$x=="A5SS")*100,
+                               sum(overlap_C$events.x=="MXE")/sum(A_B$x=="MXE")*100,
+                               sum(overlap_C$events.x=="RI")/sum(A_B$x=="RI")*100,
+                               sum(overlap_C$events.x=="SE")/sum(A_B$x=="SE")*100))
+
+```
+
+
 Events that overlap so I can do GO Analysis
 ```{r}
 overlapping_genes <- subset(overlap_C,select = c(1))
 colnames(overlapping_genes) <- c("GENES")
 overlapping_genes <- data.frame(do.call('rbind', strsplit(as.character(overlapping_genes$GENES),'_',fixed=TRUE)))
 overlapping_genes <- subset(overlapping_genes,select = c(1))
-overlapping_genes <- cbind(overlapping_genes,overlap_C$SCORE)
-colnames(overlapping_genes) <- c("GENES","SCORE")
-#overlapping_genes <- subset(overlapping_genes,select = c(3,2))
+colnames(overlapping_genes) <- c("GENES")
+overlapping_genes <- unique(overlapping_genes)
 
-#write.csv(overlapping_genes,"Sig-overlapping-genes-pen-elife.txt")
 
+ah <- AnnotationHub()
+orgs <- subset(ah, ah$rdataclass == "OrgDb")
+orgdb <- query(orgs, "Homo sapiens")[[1]]
+k = as.character(overlapping_genes$GENES)
+go <- AnnotationDbi::select(orgdb, k, "GO", "SYMBOL")
+go <- go[go$ONTOLOGY == "BP",] # biological processes
+go <- subset(go,select = c(1,2))
+go <-unique(go)
+go2 <- AnnotationDbi::select(GO.db, go$GO, c("TERM","DEFINITION"), "GOID")
+counting <- as.data.frame(count(go2, TERM))
+counting <- counting[order(-counting$n),]
+head(counting,10)
 
  
 
