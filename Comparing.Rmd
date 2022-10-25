@@ -10,7 +10,6 @@ Dependencies
 ```{r}
 library(tidyr)
 library(pheatmap)
-install.packages("BioVenn")
 library(BioVenn)
 library(ggplot2)
 library(ggpubr)
@@ -23,7 +22,7 @@ library(dplyr)
 ```{r}
 IncLevelDifference.variable = 0.05
 FDR.variable = 0.05
-counts.variable = 100
+coverage = 100
 psidiff = 0.1
 elifeFDR = 0.25
 elifeSeedScore = 3
@@ -65,12 +64,13 @@ WTvT200M_ri_jc <- separate(WTvT200M_ri_jc, col = IncLevel2, into = c("IncLevel_T
 WTvT200M_ri_jc[17:22] <- as.numeric(unlist(WTvT200M_ri_jc[17:22]))
 WTvT200M_ri_jc <- na.omit(WTvT200M_ri_jc)
 
-WTvT200M_ri_jc = subset(WTvT200M_ri_jc,IJC_SAMPLE_WT1+SJC_SAMPLE_WT1>=counts.variable)
-WTvT200M_ri_jc = subset(WTvT200M_ri_jc,IJC_SAMPLE_WT2+SJC_SAMPLE_WT2>=counts.variable)
-WTvT200M_ri_jc = subset(WTvT200M_ri_jc,IJC_SAMPLE_WT3+SJC_SAMPLE_WT3>=counts.variable)
-WTvT200M_ri_jc = subset(WTvT200M_ri_jc,IJC_SAMPLE_T200M1+SJC_SAMPLE_T200M1>=counts.variable)
-WTvT200M_ri_jc = subset(WTvT200M_ri_jc,IJC_SAMPLE_T200M2+SJC_SAMPLE_T200M2>=counts.variable)
-WTvT200M_ri_jc = subset(WTvT200M_ri_jc,IJC_SAMPLE_T200M3+SJC_SAMPLE_T200M3>=counts.variable)
+WTvT200M_ri_jc <- subset(WTvT200M_ri_jc,
+                         apply(WTvT200M_ri_jc[c(1,4)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_ri_jc[c(2,5)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_ri_jc[c(3,6)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_ri_jc[c(7,10)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_ri_jc[c(8,11)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_ri_jc[c(9,12)], MARGIN =  1,mean)>=coverage)
 
 #WTvT200M_ri_jc_filtered = subset(WTvT200M_ri_jc,FDR <= FDR.variable&abs(IncLevelDifference)>=IncLevelDifference.variable)
 
@@ -102,12 +102,13 @@ WTvT200M_se_jc <- separate(WTvT200M_se_jc, col = IncLevel2, into = c("IncLevel_T
 WTvT200M_se_jc[17:22] <- as.numeric(unlist(WTvT200M_se_jc[17:22]))
 WTvT200M_se_jc <- na.omit(WTvT200M_se_jc)
 
-WTvT200M_se_jc = subset(WTvT200M_se_jc,IJC_SAMPLE_WT1+SJC_SAMPLE_WT1>=counts.variable)
-WTvT200M_se_jc = subset(WTvT200M_se_jc,IJC_SAMPLE_WT2+SJC_SAMPLE_WT2>=counts.variable)
-WTvT200M_se_jc = subset(WTvT200M_se_jc,IJC_SAMPLE_WT3+SJC_SAMPLE_WT3>=counts.variable)
-WTvT200M_se_jc = subset(WTvT200M_se_jc,IJC_SAMPLE_T200M1+SJC_SAMPLE_T200M1>=counts.variable)
-WTvT200M_se_jc = subset(WTvT200M_se_jc,IJC_SAMPLE_T200M2+SJC_SAMPLE_T200M2>=counts.variable)
-WTvT200M_se_jc = subset(WTvT200M_se_jc,IJC_SAMPLE_T200M3+SJC_SAMPLE_T200M3>=counts.variable)
+WTvT200M_se_jc <- subset(WTvT200M_se_jc,
+                         apply(WTvT200M_se_jc[c(1,4)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_se_jc[c(2,5)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_se_jc[c(3,6)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_se_jc[c(7,10)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_se_jc[c(8,11)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_se_jc[c(9,12)], MARGIN =  1,mean)>=coverage)
 
 
 #WTvT200M_se_jc_filtered = subset(WTvT200M_se_jc,FDR <= FDR.variable&abs(IncLevelDifference)>=IncLevelDifference.variable)
@@ -139,13 +140,13 @@ WTvT200M_a3ss_jc <- separate(WTvT200M_a3ss_jc, col = IncLevel2, into = c("IncLev
 WTvT200M_a3ss_jc[17:22] <- as.numeric(unlist(WTvT200M_a3ss_jc[17:22]))
 WTvT200M_a3ss_jc <- na.omit(WTvT200M_a3ss_jc)
 
-WTvT200M_a3ss_jc = subset(WTvT200M_a3ss_jc,IJC_SAMPLE_WT1+SJC_SAMPLE_WT1>=counts.variable)
-WTvT200M_a3ss_jc = subset(WTvT200M_a3ss_jc,IJC_SAMPLE_WT2+SJC_SAMPLE_WT2>=counts.variable)
-WTvT200M_a3ss_jc = subset(WTvT200M_a3ss_jc,IJC_SAMPLE_WT3+SJC_SAMPLE_WT3>=counts.variable)
-WTvT200M_a3ss_jc = subset(WTvT200M_a3ss_jc,IJC_SAMPLE_T200M1+SJC_SAMPLE_T200M1>=counts.variable)
-WTvT200M_a3ss_jc = subset(WTvT200M_a3ss_jc,IJC_SAMPLE_T200M2+SJC_SAMPLE_T200M2>=counts.variable)
-WTvT200M_a3ss_jc = subset(WTvT200M_a3ss_jc,IJC_SAMPLE_T200M3+SJC_SAMPLE_T200M3>=counts.variable)
-
+WTvT200M_a3ss_jc <- subset(WTvT200M_a3ss_jc,
+                         apply(WTvT200M_a3ss_jc[c(1,4)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a3ss_jc[c(2,5)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a3ss_jc[c(3,6)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a3ss_jc[c(7,10)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a3ss_jc[c(8,11)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a3ss_jc[c(9,12)], MARGIN =  1,mean)>=coverage)
 
 #WTvT200M_a3ss_jc_filtered = subset(WTvT200M_a3ss_jc,FDR <= FDR.variable&abs(IncLevelDifference)>=IncLevelDifference.variable)
 
@@ -176,13 +177,13 @@ WTvT200M_a5ss_jc <- separate(WTvT200M_a5ss_jc, col = IncLevel2, into = c("IncLev
 WTvT200M_a5ss_jc[17:22] <- as.numeric(unlist(WTvT200M_a5ss_jc[17:22]))
 WTvT200M_a5ss_jc <- na.omit(WTvT200M_a5ss_jc)
 
-WTvT200M_a5ss_jc = subset(WTvT200M_a5ss_jc,IJC_SAMPLE_WT1+SJC_SAMPLE_WT1>=counts.variable)
-WTvT200M_a5ss_jc = subset(WTvT200M_a5ss_jc,IJC_SAMPLE_WT2+SJC_SAMPLE_WT2>=counts.variable)
-WTvT200M_a5ss_jc = subset(WTvT200M_a5ss_jc,IJC_SAMPLE_WT3+SJC_SAMPLE_WT3>=counts.variable)
-WTvT200M_a5ss_jc = subset(WTvT200M_a5ss_jc,IJC_SAMPLE_T200M1+SJC_SAMPLE_T200M1>=counts.variable)
-WTvT200M_a5ss_jc = subset(WTvT200M_a5ss_jc,IJC_SAMPLE_T200M2+SJC_SAMPLE_T200M2>=counts.variable)
-WTvT200M_a5ss_jc = subset(WTvT200M_a5ss_jc,IJC_SAMPLE_T200M3+SJC_SAMPLE_T200M3>=counts.variable)
-
+WTvT200M_a5ss_jc <- subset(WTvT200M_a5ss_jc,
+                         apply(WTvT200M_a5ss_jc[c(1,4)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a5ss_jc[c(2,5)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a5ss_jc[c(3,6)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a5ss_jc[c(7,10)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a5ss_jc[c(8,11)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_a5ss_jc[c(9,12)], MARGIN =  1,mean)>=coverage)
 
 #WTvT200M_a5ss_jc_filtered = subset(WTvT200M_a5ss_jc,FDR <= FDR.variable&abs(IncLevelDifference)>=IncLevelDifference.variable)
 
@@ -213,12 +214,13 @@ WTvT200M_mxe_jc <- separate(WTvT200M_mxe_jc, col = IncLevel2, into = c("IncLevel
 WTvT200M_mxe_jc[17:22] <- as.numeric(unlist(WTvT200M_mxe_jc[17:22]))
 WTvT200M_mxe_jc <- na.omit(WTvT200M_mxe_jc)
 
-WTvT200M_mxe_jc = subset(WTvT200M_mxe_jc,IJC_SAMPLE_WT1+SJC_SAMPLE_WT1>=counts.variable)
-WTvT200M_mxe_jc = subset(WTvT200M_mxe_jc,IJC_SAMPLE_WT2+SJC_SAMPLE_WT2>=counts.variable)
-WTvT200M_mxe_jc = subset(WTvT200M_mxe_jc,IJC_SAMPLE_WT3+SJC_SAMPLE_WT3>=counts.variable)
-WTvT200M_mxe_jc = subset(WTvT200M_mxe_jc,IJC_SAMPLE_T200M1+SJC_SAMPLE_T200M1>=counts.variable)
-WTvT200M_mxe_jc = subset(WTvT200M_mxe_jc,IJC_SAMPLE_T200M2+SJC_SAMPLE_T200M2>=counts.variable)
-WTvT200M_mxe_jc = subset(WTvT200M_mxe_jc,IJC_SAMPLE_T200M3+SJC_SAMPLE_T200M3>=counts.variable)
+WTvT200M_mxe_jc <- subset(WTvT200M_mxe_jc,
+                         apply(WTvT200M_mxe_jc[c(1,4)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_mxe_jc[c(2,5)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_mxe_jc[c(3,6)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_mxe_jc[c(7,10)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_mxe_jc[c(8,11)], MARGIN =  1,mean)>=coverage
+                         &apply(WTvT200M_mxe_jc[c(9,12)], MARGIN =  1,mean)>=coverage)
 
 #WTvT200M_mxe_jc_filtered = subset(WTvT200M_mxe_jc,FDR <= FDR.variable&abs(IncLevelDifference)>=IncLevelDifference.variable)
 
@@ -447,13 +449,21 @@ orgs <- subset(ah, ah$rdataclass == "OrgDb")
 orgdb <- query(orgs, "Homo sapiens")[[1]]
 k = as.character(overlapping_genes$GENES)
 go <- AnnotationDbi::select(orgdb, k, "GO", "SYMBOL")
-go <- go[go$ONTOLOGY == "BP",] # biological processes
-go <- subset(go,select = c(1,2))
-go <-unique(go)
-go2 <- AnnotationDbi::select(GO.db, go$GO, c("TERM","DEFINITION"), "GOID")
-counting <- as.data.frame(count(go2, TERM))
-counting <- counting[order(-counting$n),]
-head(counting,10)
+go1 <- go[go$ONTOLOGY == "BP",] # biological processes
+go1 <- subset(go1,select = c(1,2))
+go1 <-unique(go1)
+go2 <- AnnotationDbi::select(GO.db, go1$GO, c("TERM","DEFINITION"), "GOID")
+counting_BP <- as.data.frame(count(go2, TERM))
+counting_BP <- counting_BP[order(-counting_BP$n),]
+head(counting_BP,10)
+
+go3 <- go[go$ONTOLOGY == "MF",] # Molecular Function
+go3 <- subset(go3,select = c(1,2))
+go3 <-unique(go)
+go4 <- AnnotationDbi::select(GO.db, go3$GO, c("TERM","DEFINITION"), "GOID")
+counting_MF <- as.data.frame(count(go4, TERM))
+counting_MF <- counting_MF[order(-counting_MF$n),]
+head(counting_MF,10)
 
  
 
