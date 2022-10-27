@@ -11,6 +11,7 @@ Dependencies
 library(tidyr)
 library(pheatmap)
 library(BioVenn)
+library(ggVennDiagram)
 library(ggplot2)
 library(ggpubr)
 library(org.Hs.eg.db)
@@ -254,7 +255,7 @@ overlap_D = merge(pengda_WTvT200M,elife,by="EVENT")
 Filtering  Pengda WT vs T200M by FDR and Inc LevelDifference
 ```{r}
 pengda_WTvT200M_filtered <- subset(pengda_WTvT200M,FDR <= FDR.variable & abs(IncLevelDifference)>= IncLevelDifference.variable)
-write.csv(pengda_WTvT200M_filtered,"WTvsMUT-AS-SigEVENTS.csv")
+write.csv(pengda_WTvT200M_filtered,"WTvsT200M-AS-SigEVENTS.csv")
 ```
 
 
@@ -378,14 +379,13 @@ elife_seed <- elife_seed[order(elife_seed$seed,elife_seed$SCORE),]
 
 elife_seed_scoreunder3 <- subset(elife_seed,SCORE <=elifeSeedScore)
 
-pheatmap(elife_seed[4:17], show_rownames=F,cluster_cols= F,cluster_rows = F,scale = 'row',
+pheatmap(elife_seed_scoreunder3[4:17], show_rownames=F,cluster_cols= F,cluster_rows = F,scale = 'row',
          annotation_row = anno,annotation_col = cat_df, cellwidth = 10,color=colorRampPalette(c("red", "white", "blue"))(150),
          border_color = NA)
 ```
 Venn Diagram and Other Viz
 ```{r}
-install.packages("BioVenn")
-library(BioVenn)
+
 Pengda <- as.character(overlap_A$EVENT)
 Elife <- as.character(overlap_B$EVENT)
 Empty <- NULL
@@ -393,35 +393,59 @@ Empty <- NULL
 A_B <- as.data.frame(cbind(overlap_A$events.x,overlap_B$Event.x))
 A_B <- data.frame(x=unlist(A_B))
 
-q <- draw.venn(Pengda,Elife,Empty,title = "AS EVENTS",subtitle = " ",xtitle = "PENGDA",
-          ytitle = "ELIFE",y_c = "blue",output = "pdf",filename = "Venn Diagram",
-          yt_s = 2,xt_s = 2,nr_s = 2)
+# List of items
+x <- list(A = Pengda, B = Elife)
+
+# 2D Venn diagram
+V = ggVennDiagram(x ,category.names = c("Sig Pengda",
+                                    "Sig Elife"),label = "both")
+
+ggplot(overlap_A, aes(x=events.x, fill=events.x))+
+  geom_bar(stat="count", width=0.7) +
+  theme_minimal() + labs(x = " ",title = "Sig Events in Pengda Found in Pengda & Elife") +
+  theme(plot.title = element_text(color="black", size=20, face="bold.italic"),
+         axis.title.x = element_text(color="black", size=20, face="bold"),
+         axis.title.y = element_text(color="black", size=20, face="bold"),
+         axis.text = element_text(size = 20)) +guides(fill=guide_legend(title="AS Events"))
+
+ggplot(overlap_B, aes(x=Event.x, fill=Event.x))+
+  geom_bar(stat="count", width=0.7)+
+  theme_minimal() + labs(x = " ",title = "Sig Events in Elife Found in Pengda & Elife") + 
+  theme(plot.title = element_text(color="black", size=20, face="bold.italic"),
+         axis.title.x = element_text(color="black", size=20, face="bold"),
+         axis.title.y = element_text(color="black", size=20, face="bold"),
+         axis.text = element_text(size = 20))+guides(fill=guide_legend(title="AS Events"))
 
 
-C <- ggplot(overlap_C, aes(x=events.x))+
-  geom_bar(stat="count", width=0.7, fill="steelblue")+
-  theme_minimal()
+A <- ggplot(overlap_D, aes(x=events, fill=events))+
+  geom_bar(stat="count", width=0.7)+
+  theme_minimal() + labs(x = " ",title = "Events Found in Pengda & Elife") + 
+  theme(plot.title = element_text(color="black", size=15, face="bold.italic"),
+         axis.title.x = element_text(color="black", size=15, face="bold"),
+         axis.title.y = element_text(color="black", size=15, face="bold"),
+         axis.text = element_text(size = 15))+guides(fill=guide_legend(title="AS Events"))
 
-ggplot(overlap_A, aes(x=events.x))+
-  geom_bar(stat="count", width=0.7, fill="red")+
-  theme_minimal()
+B <- ggplot(A_B, aes(x=x, fill=x))+
+  geom_bar(stat="count", width=0.7)+
+  theme_minimal() + labs(x = " ", title = "Sig Events Found in Pengda & Elife") + 
+  theme(plot.title = element_text(color="black", size=15, face="bold.italic"),
+         axis.title.x = element_text(color="black", size=15, face="bold"),
+         axis.title.y = element_text(color="black", size=15, face="bold"),
+         axis.text = element_text(size = 15))+guides(fill=guide_legend(title="AS Events"))
 
-ggplot(overlap_B, aes(x=Event.x))+
-  geom_bar(stat="count", width=0.7, fill="green")+
-  theme_minimal()
-
-A <- ggplot(overlap_D, aes(x=events))+
-  geom_bar(stat="count", width=0.7, fill="green")+
-  theme_minimal()
-
-B <- ggplot(A_B, aes(x=x))+
-  geom_bar(stat="count", width=0.7, fill="green")+
-  theme_minimal()
+C <- ggplot(overlap_C, aes(x=events.x, fill=events.x))+
+  geom_bar(stat="count", width=0.7)+
+  theme_minimal() + labs(x =" ",title = "Events overlapping w/  Sig Events Pengda & Elife") + 
+  theme(plot.title = element_text(color="black", size=15, face="bold.italic"),
+         axis.title.x = element_text(color="black", size=15, face="bold"),
+         axis.title.y = element_text(color="black", size=15, face="bold"),
+         axis.text = element_text(size = 15))+guides(fill=guide_legend(title="AS Events"))
 
 
-gg <- ggarrange(A, B,C, 
-          labels = c("A", "B","C"),
-          ncol = 3, nrow = 1)
+gg <- ggarrange(A,B,V,C, 
+          labels = c("A", "B","C","D"),
+          ncol = 2, nrow = 2)
+
 
 
 pp <- data.frame(Events = c("A3SS","A5SS","MXE","RI","SE"),
@@ -430,6 +454,14 @@ pp <- data.frame(Events = c("A3SS","A5SS","MXE","RI","SE"),
                                sum(overlap_C$events.x=="MXE")/sum(A_B$x=="MXE")*100,
                                sum(overlap_C$events.x=="RI")/sum(A_B$x=="RI")*100,
                                sum(overlap_C$events.x=="SE")/sum(A_B$x=="SE")*100))
+
+ggplot(pp, aes(x=Events, y = percent, fill=Events))+
+  geom_bar(stat = "identity")+
+  theme_minimal() + labs(x = " ",title = "Percent change of Sig Events in Elife Found in Pengda & Elife") +
+  theme(plot.title = element_text(color="black", size=20, face="bold.italic"),
+         axis.title.x = element_text(color="black", size=20, face="bold"),
+         axis.title.y = element_text(color="black", size=20, face="bold"),
+         axis.text = element_text(size = 20))+guides(fill=guide_legend(title="AS Events"))
 
 ```
 
@@ -442,6 +474,7 @@ overlapping_genes <- data.frame(do.call('rbind', strsplit(as.character(overlappi
 overlapping_genes <- subset(overlapping_genes,select = c(1))
 colnames(overlapping_genes) <- c("GENES")
 overlapping_genes <- unique(overlapping_genes)
+write.csv(overlapping_genes,"Overlapping Genes.csv")
 
 
 ah <- AnnotationHub()
@@ -449,6 +482,8 @@ orgs <- subset(ah, ah$rdataclass == "OrgDb")
 orgdb <- query(orgs, "Homo sapiens")[[1]]
 k = as.character(overlapping_genes$GENES)
 go <- AnnotationDbi::select(orgdb, k, "GO", "SYMBOL")
+
+
 go1 <- go[go$ONTOLOGY == "BP",] # biological processes
 go1 <- subset(go1,select = c(1,2))
 go1 <-unique(go1)
@@ -459,16 +494,29 @@ head(counting_BP,10)
 
 go3 <- go[go$ONTOLOGY == "MF",] # Molecular Function
 go3 <- subset(go3,select = c(1,2))
-go3 <-unique(go)
+go3 <-unique(go3)
 go4 <- AnnotationDbi::select(GO.db, go3$GO, c("TERM","DEFINITION"), "GOID")
 counting_MF <- as.data.frame(count(go4, TERM))
 counting_MF <- counting_MF[order(-counting_MF$n),]
 head(counting_MF,10)
 
- 
+go5 <- go[go$ONTOLOGY == "CC",] # Cellular Component
+go5 <- subset(go5,select = c(1,2))
+go5 <-unique(go5)
+go6 <- AnnotationDbi::select(GO.db, go5$GO, c("TERM","DEFINITION"), "GOID")
+counting_CC <- as.data.frame(count(go6, TERM))
+counting_CC <- counting_CC[order(-counting_CC$n),]
+head(counting_CC,10) 
 
 
 ```
+
+
+
+
+
+
+
 
 
 

@@ -215,8 +215,8 @@ Cellcycle_A5SS_JC <- read.table("/pine/scr/k/w/kwamek/pengda_collab/RMATS-Cellcy
 Cellcycle_A5SS_JC <- as.data.frame(Cellcycle_A5SS_JC)
 Cellcycle_A5SS_JC$Key <- paste(Cellcycle_A5SS_JC$ID,Cellcycle_A5SS_JC$GeneID,sep = "_")
 rownames(Cellcycle_A5SS_JC) <- Cellcycle_A5SS_JC$Key
-AS = as.data.frame(rep("A3SS",dim(Cellcycle_A5SS_JC)[1]))
-names(AS)[names(AS) == 'rep("A3SS", dim(Cellcycle_A5SS_JC)[1])'] <- "Event"
+AS = as.data.frame(rep("A5SS",dim(Cellcycle_A5SS_JC)[1]))
+names(AS)[names(AS) == 'rep("A5SS", dim(Cellcycle_A5SS_JC)[1])'] <- "Event"
 Cellcycle_A5SS_JC = cbind(Cellcycle_A5SS_JC,AS)
 
 Cellcycle_A5SS_JC <- separate(Cellcycle_A5SS_JC, col = IJC_SAMPLE_1, into = c("IJC_TP_1","IJC_TP_2","IJC_TP_3","IJC_TP_6","IJC_TP_7",
@@ -277,8 +277,8 @@ Cellcycle_MXE_JC <- read.table("/pine/scr/k/w/kwamek/pengda_collab/RMATS-Cellcyc
 Cellcycle_MXE_JC <- as.data.frame(Cellcycle_MXE_JC)
 Cellcycle_MXE_JC$Key <- paste(Cellcycle_MXE_JC$ID,Cellcycle_MXE_JC$GeneID,sep = "_")
 rownames(Cellcycle_MXE_JC) <- Cellcycle_MXE_JC$Key
-AS = as.data.frame(rep("A3SS",dim(Cellcycle_MXE_JC)[1]))
-names(AS)[names(AS) == 'rep("A3SS", dim(Cellcycle_MXE_JC)[1])'] <- "Event"
+AS = as.data.frame(rep("MXE",dim(Cellcycle_MXE_JC)[1]))
+names(AS)[names(AS) == 'rep("MXE", dim(Cellcycle_MXE_JC)[1])'] <- "Event"
 Cellcycle_MXE_JC = cbind(Cellcycle_MXE_JC,AS)
 
 Cellcycle_MXE_JC <- separate(Cellcycle_MXE_JC, col = IJC_SAMPLE_1, into = c("IJC_TP_1","IJC_TP_2","IJC_TP_3","IJC_TP_6","IJC_TP_7",
