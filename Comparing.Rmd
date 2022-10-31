@@ -468,6 +468,9 @@ ggplot(pp, aes(x=Events, y = percent, fill=Events))+
 
 Events that overlap so I can do GO Analysis
 ```{r}
+library(org.Hs.eg.db)
+library(AnnotationHub)
+library(GO.db)
 overlapping_genes <- subset(overlap_C,select = c(1))
 colnames(overlapping_genes) <- c("GENES")
 overlapping_genes <- data.frame(do.call('rbind', strsplit(as.character(overlapping_genes$GENES),'_',fixed=TRUE)))
@@ -483,7 +486,7 @@ orgdb <- query(orgs, "Homo sapiens")[[1]]
 k = as.character(overlapping_genes$GENES)
 go <- AnnotationDbi::select(orgdb, k, "GO", "SYMBOL")
 
-
+#Looking at Biological process only
 go1 <- go[go$ONTOLOGY == "BP",] # biological processes
 go1 <- subset(go1,select = c(1,2))
 go1 <-unique(go1)
@@ -492,6 +495,7 @@ counting_BP <- as.data.frame(count(go2, TERM))
 counting_BP <- counting_BP[order(-counting_BP$n),]
 head(counting_BP,10)
 
+#Looking at Molecular Function only
 go3 <- go[go$ONTOLOGY == "MF",] # Molecular Function
 go3 <- subset(go3,select = c(1,2))
 go3 <-unique(go3)
@@ -500,6 +504,7 @@ counting_MF <- as.data.frame(count(go4, TERM))
 counting_MF <- counting_MF[order(-counting_MF$n),]
 head(counting_MF,10)
 
+#Looking at Cellular Component only
 go5 <- go[go$ONTOLOGY == "CC",] # Cellular Component
 go5 <- subset(go5,select = c(1,2))
 go5 <-unique(go5)
