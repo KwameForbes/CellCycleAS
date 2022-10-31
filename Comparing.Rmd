@@ -468,9 +468,6 @@ ggplot(pp, aes(x=Events, y = percent, fill=Events))+
 
 Events that overlap so I can do GO Analysis
 ```{r}
-library(org.Hs.eg.db)
-library(AnnotationHub)
-library(GO.db)
 overlapping_genes <- subset(overlap_C,select = c(1))
 colnames(overlapping_genes) <- c("GENES")
 overlapping_genes <- data.frame(do.call('rbind', strsplit(as.character(overlapping_genes$GENES),'_',fixed=TRUE)))
